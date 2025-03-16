@@ -1,0 +1,54 @@
+Evaluating Overcooked-CoordRing6_9 against population for 9SEED_9_dr-overcookedNonexNonewNone_fs_FIXcoord_ring_6_9_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr3e-5g0.99cv0.5ce0.01e5mb1l0.95_pc0.2_h64cf32fc2se5ba_re_0
+
+-----------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CoordRing6_9          |  39.25+/- 4.04 (max:  127.8)   |
+| eval/a0:test_return_std:Overcooked-CoordRing6_9      |  16.08+/- 0.5815 (max:  26.51) |
+| eval/a0:test_solved_rate:Overcooked-CoordRing6_9     |  0.5467+/- 0.05222 (max:  1.0) |
+| min:eval/a0:test_return:Overcooked-CoordRing6_9      |  6.2                           |
+| min:eval/a0:test_return_std:Overcooked-CoordRing6_9  |  9.25                          |
+| min:eval/a0:test_solved_rate:Overcooked-CoordRing6_9 |  0.0                           |
+-----------------------------------------------------------------------------------------
+
+Evaluating Overcooked-ForcedCoord6_9 against population for 9SEED_9_dr-overcookedNonexNonewNone_fs_FIXforced_coord_6_9_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr3e-5g0.99cv0.5ce0.01e5mb1l0.95_pc0.2_h64cf32fc2se5ba_re_0
+
+
+-------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-ForcedCoord6_9          |  37.32+/- 6.509 (max:  140.4)  |
+| eval/a0:test_return_std:Overcooked-ForcedCoord6_9      |  12.47+/- 0.8239 (max:  28.85) |
+| eval/a0:test_solved_rate:Overcooked-ForcedCoord6_9     |  0.389+/- 0.06325 (max:  1.0)  |
+| min:eval/a0:test_return:Overcooked-ForcedCoord6_9      |  0.2                           |
+| min:eval/a0:test_return_std:Overcooked-ForcedCoord6_9  |  1.99                          |
+| min:eval/a0:test_solved_rate:Overcooked-ForcedCoord6_9 |  0.0                           |
+-------------------------------------------------------------------------------------------
+
+Evaluating Overcooked-CounterCircuit6_9 against population for 9SEED_9_dr-overcookedNonexNonewNone_fs_FIXcounter_circuit_6_9_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr3e-5g0.99cv0.5ce0.01e5mb1l0.95_pc0.2_h64cf32fc2se5ba_re_0
+
+----------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CounterCircuit6_9          |  45.24+/- 2.834 (max:  76.8)   |
+| eval/a0:test_return_std:Overcooked-CounterCircuit6_9      |  15.99+/- 0.572 (max:  29.8)   |
+| eval/a0:test_solved_rate:Overcooked-CounterCircuit6_9     |  0.7121+/- 0.04546 (max:  1.0) |
+| min:eval/a0:test_return:Overcooked-CounterCircuit6_9      |  5.6                           |
+| min:eval/a0:test_return_std:Overcooked-CounterCircuit6_9  |  9.415                         |
+| min:eval/a0:test_solved_rate:Overcooked-CounterCircuit6_9 |  0.01                          |
+----------------------------------------------------------------------------------------------
+
+Evaluating Overcooked-AsymmAdvantages6_9 against population for 9SEED_9_dr-overcookedNonexNonewNone_fs_FIXasymm_advantages_6_9_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr3e-5g0.99cv0.5ce0.01e5mb1l0.95_pc0.2_h64cf32fc2se5ba_re_0
+
+-----------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-AsymmAdvantages6_9          |  152.0+/- 9.415 (max:  230.4)  |
+| eval/a0:test_return_std:Overcooked-AsymmAdvantages6_9      |  23.14+/- 1.555 (max:  45.34)  |
+| eval/a0:test_solved_rate:Overcooked-AsymmAdvantages6_9     |  0.9665+/- 0.01026 (max:  1.0) |
+| min:eval/a0:test_return:Overcooked-AsymmAdvantages6_9      |  48.8                          |
+| min:eval/a0:test_return_std:Overcooked-AsymmAdvantages6_9  |  8.697                         |
+| min:eval/a0:test_solved_rate:Overcooked-AsymmAdvantages6_9 |  0.74                          |
+-----------------------------------------------------------------------------------------------
+Evaluating Overcooked-CrampedRoom6_9 against population for 9SEED_9_dr-overcookedNonexNonewNone_fs_FIXcramped_room_6_9_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr3e-5g0.99cv0.5ce0.01e5mb1l0.95_pc0.2_h64cf32fc2se5ba_re_0
+
+---------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CrampedRoom6_9          |  150.3+/- 5.073 (max:  203.4)    |
+| eval/a0:test_return_std:Overcooked-CrampedRoom6_9      |  19.68+/- 0.7425 (max:  41.5)    |
+| eval/a0:test_solved_rate:Overcooked-CrampedRoom6_9     |  0.9973+/- 0.0008802 (max:  1.0) |
+| min:eval/a0:test_return:Overcooked-CrampedRoom6_9      |  94.6                            |
+| min:eval/a0:test_return_std:Overcooked-CrampedRoom6_9  |  12.67                           |
+| min:eval/a0:test_solved_rate:Overcooked-CrampedRoom6_9 |  0.98                            |
+---------------------------------------------------------------------------------------------

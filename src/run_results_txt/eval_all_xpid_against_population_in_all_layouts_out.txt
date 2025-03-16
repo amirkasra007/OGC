@@ -1,0 +1,138 @@
+Evaluating dr against population in Overcooked-CoordRing5_5 for dr-overcooked5x5w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CoordRing5_5          |  15.35+/- 0.6965 (max:  23.2)   |
+| eval/a0:test_return_std:Overcooked-CoordRing5_5      |  13.78+/- 0.2437 (max:  17.16)  |
+| eval/a0:test_solved_rate:Overcooked-CoordRing5_5     |  0.1606+/- 0.01226 (max:  0.35) |
+| min:eval/a0:test_return:Overcooked-CoordRing5_5      |  6.4                            |
+| min:eval/a0:test_return_std:Overcooked-CoordRing5_5  |  10.15                          |
+| min:eval/a0:test_solved_rate:Overcooked-CoordRing5_5 |  0.02                           |
+------------------------------------------------------------------------------------------
+Evaluating dr against population in Overcooked-ForcedCoord5_5 for dr-overcooked5x5w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+-------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-ForcedCoord5_5          |  0.6208+/- 0.06281 (max:  1.8) |
+| eval/a0:test_return_std:Overcooked-ForcedCoord5_5      |  3.16+/- 0.199 (max:  5.724)   |
+| eval/a0:test_solved_rate:Overcooked-ForcedCoord5_5     |  0.0+/- 0.0 (max:  0.0)        |
+| min:eval/a0:test_return:Overcooked-ForcedCoord5_5      |  0.0                           |
+| min:eval/a0:test_return_std:Overcooked-ForcedCoord5_5  |  0.0                           |
+| min:eval/a0:test_solved_rate:Overcooked-ForcedCoord5_5 |  0.0                           |
+-------------------------------------------------------------------------------------------
+Evaluating dr against population in Overcooked-CrampedRoom5_5 for dr-overcooked5x5w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+--------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CrampedRoom5_5          |  60.29+/- 4.157 (max:  99.4)    |
+| eval/a0:test_return_std:Overcooked-CrampedRoom5_5      |  27.89+/- 1.176 (max:  38.66)   |
+| eval/a0:test_solved_rate:Overcooked-CrampedRoom5_5     |  0.7073+/- 0.04138 (max:  0.98) |
+| min:eval/a0:test_return:Overcooked-CrampedRoom5_5      |  15.8                           |
+| min:eval/a0:test_return_std:Overcooked-CrampedRoom5_5  |  14.53                          |
+| min:eval/a0:test_solved_rate:Overcooked-CrampedRoom5_5 |  0.18                           |
+--------------------------------------------------------------------------------------------
+Evaluating plr against population in Overcooked-CoordRing5_5 for plr-overcooked5x5w15_fs_IMAGE-rpf_p0.5b4000t0.1s0.3m0.5r_r1s_32p_1e_400t_ae1e-05_smm-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+--------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CoordRing5_5          |  1.212+/- 0.2802 (max:  8.6)      |
+| eval/a0:test_return_std:Overcooked-CoordRing5_5      |  3.613+/- 0.4178 (max:  11.4)     |
+| eval/a0:test_solved_rate:Overcooked-CoordRing5_5     |  0.002708+/- 0.00102 (max:  0.04) |
+| min:eval/a0:test_return:Overcooked-CoordRing5_5      |  0.0                              |
+| min:eval/a0:test_return_std:Overcooked-CoordRing5_5  |  0.0                              |
+| min:eval/a0:test_solved_rate:Overcooked-CoordRing5_5 |  0.0                              |
+--------------------------------------------------------------------------------------------
+Evaluating plr against population in Overcooked-ForcedCoord5_5 for plr-overcooked5x5w15_fs_IMAGE-rpf_p0.5b4000t0.1s0.3m0.5r_r1s_32p_1e_400t_ae1e-05_smm-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+-------------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-ForcedCoord5_5          |  0.3167+/- 0.1021 (max:  3.2)        |
+| eval/a0:test_return_std:Overcooked-ForcedCoord5_5      |  1.334+/- 0.2965 (max:  7.332)       |
+| eval/a0:test_solved_rate:Overcooked-ForcedCoord5_5     |  0.0002083+/- 0.0002083 (max:  0.01) |
+| min:eval/a0:test_return:Overcooked-ForcedCoord5_5      |  0.0                                 |
+| min:eval/a0:test_return_std:Overcooked-ForcedCoord5_5  |  0.0                                 |
+| min:eval/a0:test_solved_rate:Overcooked-ForcedCoord5_5 |  0.0                                 |
+-------------------------------------------------------------------------------------------------
+Evaluating plr against population in Overcooked-CrampedRoom5_5 for plr-overcooked5x5w15_fs_IMAGE-rpf_p0.5b4000t0.1s0.3m0.5r_r1s_32p_1e_400t_ae1e-05_smm-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+-------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CrampedRoom5_5          |  56.94+/- 3.333 (max:  89.0)   |
+| eval/a0:test_return_std:Overcooked-CrampedRoom5_5      |  26.26+/- 0.8617 (max:  35.83) |
+| eval/a0:test_solved_rate:Overcooked-CrampedRoom5_5     |  0.7342+/- 0.03327 (max:  1.0) |
+| min:eval/a0:test_return:Overcooked-CrampedRoom5_5      |  21.8                          |
+| min:eval/a0:test_return_std:Overcooked-CrampedRoom5_5  |  16.99                         |
+| min:eval/a0:test_solved_rate:Overcooked-CrampedRoom5_5 |  0.32                          |
+-------------------------------------------------------------------------------------------
+Evaluating paired against population in Overcooked-CoordRing5_5 for paired-overcooked5x5w5_ld50_rb-r2s_32p_1e_400t_ae1e-05_sr-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___tch_ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98pc0.2_h64cf128fc1se10ba_re_lstm_h64_0
+
+------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CoordRing5_5          |  19.15+/- 0.6706 (max:  26.4)   |
+| eval/a0:test_return_std:Overcooked-CoordRing5_5      |  13.84+/- 0.1905 (max:  16.12)  |
+| eval/a0:test_solved_rate:Overcooked-CoordRing5_5     |  0.2283+/- 0.01399 (max:  0.42) |
+| eval/a1:test_return:Overcooked-CoordRing5_5          |  0.0+/- 0.0 (max:  0.0)         |
+| eval/a1:test_return_std:Overcooked-CoordRing5_5      |  0.0+/- 0.0 (max:  0.0)         |
+| eval/a1:test_solved_rate:Overcooked-CoordRing5_5     |  0.0+/- 0.0 (max:  0.0)         |
+| min:eval/a0:test_return:Overcooked-CoordRing5_5      |  9.6                            |
+| min:eval/a0:test_return_std:Overcooked-CoordRing5_5  |  11.61                          |
+| min:eval/a0:test_solved_rate:Overcooked-CoordRing5_5 |  0.06                           |
+| min:eval/a1:test_return:Overcooked-CoordRing5_5      |  0.0                            |
+| min:eval/a1:test_return_std:Overcooked-CoordRing5_5  |  0.0                            |
+| min:eval/a1:test_solved_rate:Overcooked-CoordRing5_5 |  0.0                            |
+------------------------------------------------------------------------------------------
+Evaluating paired against population in Overcooked-ForcedCoord5_5 for paired-overcooked5x5w5_ld50_rb-r2s_32p_1e_400t_ae1e-05_sr-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___tch_ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98pc0.2_h64cf128fc1se10ba_re_lstm_h64_0
+
+-------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-ForcedCoord5_5          |  0.375+/- 0.05446 (max:  1.6)  |
+| eval/a0:test_return_std:Overcooked-ForcedCoord5_5      |  2.292+/- 0.2046 (max:  5.426) |
+| eval/a0:test_solved_rate:Overcooked-ForcedCoord5_5     |  0.0+/- 0.0 (max:  0.0)        |
+| eval/a1:test_return:Overcooked-ForcedCoord5_5          |  0.0+/- 0.0 (max:  0.0)        |
+| eval/a1:test_return_std:Overcooked-ForcedCoord5_5      |  0.0+/- 0.0 (max:  0.0)        |
+| eval/a1:test_solved_rate:Overcooked-ForcedCoord5_5     |  0.0+/- 0.0 (max:  0.0)        |
+| min:eval/a0:test_return:Overcooked-ForcedCoord5_5      |  0.0                           |
+| min:eval/a0:test_return_std:Overcooked-ForcedCoord5_5  |  0.0                           |
+| min:eval/a0:test_solved_rate:Overcooked-ForcedCoord5_5 |  0.0                           |
+| min:eval/a1:test_return:Overcooked-ForcedCoord5_5      |  0.0                           |
+| min:eval/a1:test_return_std:Overcooked-ForcedCoord5_5  |  0.0                           |
+| min:eval/a1:test_solved_rate:Overcooked-ForcedCoord5_5 |  0.0                           |
+-------------------------------------------------------------------------------------------
+Evaluating paired against population in Overcooked-CrampedRoom5_5 for paired-overcooked5x5w5_ld50_rb-r2s_32p_1e_400t_ae1e-05_sr-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___tch_ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98pc0.2_h64cf128fc1se10ba_re_lstm_h64_0
+
+-------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CrampedRoom5_5          |  66.46+/- 3.787 (max:  101.2)  |
+| eval/a0:test_return_std:Overcooked-CrampedRoom5_5      |  27.66+/- 1.134 (max:  42.87)  |
+| eval/a0:test_solved_rate:Overcooked-CrampedRoom5_5     |  0.7854+/- 0.02626 (max:  1.0) |
+| eval/a1:test_return:Overcooked-CrampedRoom5_5          |  3.1+/- 0.4522 (max:  6.2)     |
+| eval/a1:test_return_std:Overcooked-CrampedRoom5_5      |  5.039+/- 0.735 (max:  10.08)  |
+| eval/a1:test_solved_rate:Overcooked-CrampedRoom5_5     |  0.01+/- 0.001459 (max:  0.02) |
+| min:eval/a0:test_return:Overcooked-CrampedRoom5_5      |  27.2                          |
+| min:eval/a0:test_return_std:Overcooked-CrampedRoom5_5  |  17.95                         |
+| min:eval/a0:test_solved_rate:Overcooked-CrampedRoom5_5 |  0.44                          |
+| min:eval/a1:test_return:Overcooked-CrampedRoom5_5      |  0.0                           |
+| min:eval/a1:test_return_std:Overcooked-CrampedRoom5_5  |  0.0                           |
+| min:eval/a1:test_solved_rate:Overcooked-CrampedRoom5_5 |  0.0                           |
+-------------------------------------------------------------------------------------------
+Evaluating accel against population in Overcooked-CoordRing5_5 for plr-overcooked5x5w15_fs_IMAGE-rpf_p0.8b4000t0.1s0.3m0.5r_mdef20bat_r1s_32p_1e_400t_ae1e-05_smm-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+-----------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CoordRing5_5          |  19.28+/- 0.7542 (max:  27.2)  |
+| eval/a0:test_return_std:Overcooked-CoordRing5_5      |  13.71+/- 0.2366 (max:  17.09) |
+| eval/a0:test_solved_rate:Overcooked-CoordRing5_5     |  0.2304+/- 0.0163 (max:  0.45) |
+| min:eval/a0:test_return:Overcooked-CoordRing5_5      |  10.2                          |
+| min:eval/a0:test_return_std:Overcooked-CoordRing5_5  |  10.44                         |
+| min:eval/a0:test_solved_rate:Overcooked-CoordRing5_5 |  0.04                          |
+-----------------------------------------------------------------------------------------
+Evaluating accel against population in Overcooked-ForcedCoord5_5 for plr-overcooked5x5w15_fs_IMAGE-rpf_p0.8b4000t0.1s0.3m0.5r_mdef20bat_r1s_32p_1e_400t_ae1e-05_smm-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+----------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-ForcedCoord5_5          |  4.071+/- 0.6144 (max:  12.6)     |
+| eval/a0:test_return_std:Overcooked-ForcedCoord5_5      |  6.018+/- 0.5814 (max:  11.54)    |
+| eval/a0:test_solved_rate:Overcooked-ForcedCoord5_5     |  0.00625+/- 0.001826 (max:  0.05) |
+| min:eval/a0:test_return:Overcooked-ForcedCoord5_5      |  0.0                              |
+| min:eval/a0:test_return_std:Overcooked-ForcedCoord5_5  |  0.0                              |
+| min:eval/a0:test_solved_rate:Overcooked-ForcedCoord5_5 |  0.0                              |
+----------------------------------------------------------------------------------------------
+Evaluating accel against population in Overcooked-CrampedRoom5_5 for plr-overcooked5x5w15_fs_IMAGE-rpf_p0.8b4000t0.1s0.3m0.5r_mdef20bat_r1s_32p_1e_400t_ae1e-05_smm-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0
+
+--------------------------------------------------------------------------------------------
+| eval/a0:test_return:Overcooked-CrampedRoom5_5          |  63.35+/- 4.381 (max:  97.6)    |
+| eval/a0:test_return_std:Overcooked-CrampedRoom5_5      |  23.11+/- 0.861 (max:  32.16)   |
+| eval/a0:test_solved_rate:Overcooked-CrampedRoom5_5     |  0.7387+/- 0.04596 (max:  0.99) |
+| min:eval/a0:test_return:Overcooked-CrampedRoom5_5      |  10.8                           |
+| min:eval/a0:test_return_std:Overcooked-CrampedRoom5_5  |  12.14                          |
+| min:eval/a0:test_solved_rate:Overcooked-CrampedRoom5_5 |  0.06                           |
+--------------------------------------------------------------------------------------------
