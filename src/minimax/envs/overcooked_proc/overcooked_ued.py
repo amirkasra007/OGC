@@ -566,8 +566,8 @@ if __name__ == "__main__":
     # object_positions, object_status = env.get_object_representation(state)
     ss = env.get_max_objects()
     print(ss)
-    # print("Object Positions:\n", object_positions)
-    # print("Object Status:\n", object_status)
+    print("Object Positions:\n", object_positions)
+    print("Object Status:\n", object_status)
 
 
 if hasattr(__loader__, 'name'):
