@@ -548,14 +548,14 @@ class UEDOvercooked(environment.Environment):
 
         return total_objects  # Total number of objects in the environment
     
-    # def obj_centric_repre(self):
-    #     grid_size = self.n_tiles
-    #     obj_cent = jnp.zeros((self.params.height, self.params.width))
-    #     h = self.params.height 
-    #     w=self.params.width
-    #     for i in range(h):
-    #         for j in range(w):
-    #             obj_cent[i][j]
+    def obj_centric_repre(self):
+        grid_size = self.n_tiles
+        obj_cent = jnp.zeros((self.params.height, self.params.width))
+        h = self.params.height 
+        w=self.params.width
+        for i in range(h):
+            for j in range(w):
+                obj_cent[i][j]
 
 
 if __name__ == "__main__":
