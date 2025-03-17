@@ -115,16 +115,26 @@ class UEDOvercooked(environment.Environment):
 
         return obs
 
-    def reset_env(
-            self,
-            key: chex.PRNGKey):
+    def reset_env(self, key: chex.PRNGKey):
         """
         Prepares the environment state for a new design
-        from a blank slate. 
+        from a blank slate.
         """
         params = self.params
-        noise_rng, dir_rng = jax.random.split(key)
+        noise_rng, dir_rng, obj_rng = jax.random.split(key, 3)
+
+        # Initialize encoding with zeros
         encoding = jnp.zeros((self._get_encoding_dim(),), dtype=jnp.uint8)
+
+        # Randomly assign object positions in the encoding
+        num_objects = 10  # Adjust this based on max objects
+        possible_positions = jnp.arange(self.n_tiles)
+
+        # Randomly select positions for objects
+        object_positions = jax.random.choice(obj_rng, possible_positions, shape=(num_objects,), replace=False)
+
+        # Store positions in the encoding array
+        encoding = encoding.at[:num_objects].set(object_positions)
 
         state = UEDEnvState(
             encoding=encoding,
@@ -132,12 +142,15 @@ class UEDOvercooked(environment.Environment):
             terminal=False,
         )
 
+        print("Initialized Encoding in reset_env:", encoding)  # Debugging print
+
         obs = self._add_noise_to_obs(
             noise_rng,
             self.get_obs(state)
         )
 
         return obs, state
+
 
     def get_monitored_metrics(self):
         return ()
@@ -228,53 +241,68 @@ class UEDOvercooked(environment.Environment):
             {},
         )
 
-    def get_env_instance(
-        self,
-        key: chex.PRNGKey,
-        state: UEDEnvState
-    ) -> chex.Array:
+    def get_env_instance(self, key: chex.PRNGKey, state: UEDEnvState) -> chex.Array:
         """
         Converts internal encoding to an instance encoding that 
-        can be interpreted by the `set_to_instance` method 
-        the paired Environment class.
+        can be interpreted by the `set_to_instance` method.
         """
         params = self.params
         h = params.height
         w = params.width
         enc = state.encoding
 
-        # === Extract agent_dir, agent_pos, and goal_pos ===
-        # Num walls placed currently
-        if params.fixed_n_wall_steps:
-            n_walls = params.n_walls
-            enc_len = self._get_encoding_dim()
-            wall_pos_idx = jnp.flip(enc[:params.n_walls])
-            agent_pos_1_idx = enc_len-2  # Enc is full length
-            agent_pos_2_idx = enc_len-3
-            goal_pos_1_idx = enc_len-4
-            onion_pos_1_idx = enc_len-6
-            pot_pos_1_idx = enc_len-8
-            bowl_pos_1_idx = enc_len-10
-        else:
-            n_walls = jnp.round(
-                params.n_walls*enc[0]/self.n_tiles
-            ).astype(jnp.uint32)
-            if params.first_wall_pos_sets_budget:
-                # So 0-padding does not override pos=0
-                wall_pos_idx = jnp.flip(enc[:params.n_walls])
-                enc_len = n_walls + 10  # [wall_pos] + len((goal, agent))
-            else:
-                wall_pos_idx = jnp.flip(enc[1:params.n_walls+1])
-                # [wall_pos] + len((n_walls, goal, agent))
-                enc_len = n_walls + 11
-            agent_pos_1_idx = enc_len-1  # Enc is full length
-            agent_pos_2_idx = enc_len-2
-            goal_pos_1_idx = enc_len-3
-            onion_pos_1_idx = enc_len-5
-            pot_pos_1_idx = enc_len-7
-            bowl_pos_1_idx = enc_len-9
+        # 🛑 Debugging: Print the full encoding array
+        print("🔍 Encoding Array:", enc)
 
-            # Make wall map
+        # Extract object positions from encoding
+        if params.fixed_n_wall_steps:
+            agent_pos_1_idx = self._get_encoding_dim() - 2
+            agent_pos_2_idx = self._get_encoding_dim() - 3
+            goal_pos_1_idx = self._get_encoding_dim() - 4
+            onion_pos_1_idx = self._get_encoding_dim() - 6
+            pot_pos_1_idx = self._get_encoding_dim() - 8
+            bowl_pos_1_idx = self._get_encoding_dim() - 10
+        else:
+            agent_pos_1_idx = jnp.round(params.n_walls*enc[0]/self.n_tiles).astype(jnp.uint32) + 10 - 1
+            agent_pos_2_idx = agent_pos_1_idx - 1
+            goal_pos_1_idx = agent_pos_1_idx - 3
+            onion_pos_1_idx = agent_pos_1_idx - 5
+            pot_pos_1_idx = agent_pos_1_idx - 7
+            bowl_pos_1_idx = agent_pos_1_idx - 9
+
+        # 🛑 Debugging: Print extracted object positions
+        print(f"📍 Object Positions (Encoded) -> Goal: {enc[goal_pos_1_idx]}, Onion: {enc[onion_pos_1_idx]}, Pot: {enc[pot_pos_1_idx]}, Plate: {enc[bowl_pos_1_idx]}")
+
+        # 🛑 Debugging: Check if indices are valid
+        max_grid_idx = h * w - 1
+        if enc[goal_pos_1_idx] > max_grid_idx or enc[onion_pos_1_idx] > max_grid_idx or \
+        enc[pot_pos_1_idx] > max_grid_idx or enc[bowl_pos_1_idx] > max_grid_idx:
+            print("⚠ Warning: Some object indices exceed grid bounds!")
+        # === Extract object positions from encoding ===
+        if params.fixed_n_wall_steps:
+            n_walls = params.n_walls  # Fixed number of walls
+            enc_len = self._get_encoding_dim()  # Full encoding length
+            wall_pos_idx = jnp.flip(enc[:n_walls])  # Wall positions are in the first `n_walls` elements
+        else:
+            n_walls = jnp.round(params.n_walls * enc[0] / self.n_tiles).astype(jnp.uint32)
+            
+            if params.first_wall_pos_sets_budget:
+                # Extract the wall positions (with padding)
+                wall_pos_idx = jnp.flip(enc[:params.n_walls])
+                enc_len = n_walls + 10
+            else:
+                # Wall positions start from index 1 onwards
+                wall_pos_idx = jnp.flip(enc[1:params.n_walls + 1])
+                enc_len = n_walls + 11
+
+        # 🛑 Debugging: Print wall positions and number of walls
+        print(f"🧱 Wall Positions (Encoded): {wall_pos_idx}")
+        print(f"🏗️ Number of Walls: {n_walls}")
+
+
+
+
+        # Make wall map
         wall_start_time = jnp.logical_and(  # 1 if explicitly predict # blocks, else 0
             not params.fixed_n_wall_steps,
             not params.first_wall_pos_sets_budget
@@ -293,6 +321,9 @@ class UEDOvercooked(environment.Environment):
         wall_map = wall_map.reshape(-1)
 
         occupied_mask = wall_map
+        print(f"🛑 Occupied Mask:\n{occupied_mask.reshape(self.params.height, self.params.width)}")
+
+
 
         """Agents should always end up on an empty square. If they are placed on a wall pick randomly."""
         is_occupied = occupied_mask[enc[agent_pos_1_idx]] == 1
@@ -333,8 +364,13 @@ class UEDOvercooked(environment.Environment):
         is_occupied = agents_obj_occupied_mask[enc[goal_pos_1_idx]] == 1
         goal_pos_1_idx_enc = is_occupied*jax.random.choice(key, jnp.arange(
             h*w), shape=(), p=jnp.logical_not(agents_obj_occupied_mask)) + jnp.logical_not(is_occupied)*enc[goal_pos_1_idx]
-        goal_1_placed = state.time > jnp.array(
-            [goal_pos_1_idx], dtype=jnp.uint8)
+        goal_1_placed = jnp.array(True, dtype=jnp.bool_)
+
+        print(f"🔍 Encoded Goal Position Index: {goal_pos_1_idx}")
+        print(f"📍 Mapped Goal Position (Flat Index): {goal_pos_1_idx_enc}")
+        print(f"✅ Is Occupied Before Placement? {is_occupied}")
+        print(f"⏳ Time Step: {state.time}, Goal Placement Condition: {goal_1_placed}")
+
         goal_1_pos = \
             goal_1_placed*jnp.zeros((h*w), dtype=jnp.uint8).at[goal_pos_1_idx_enc].set(1) \
             + (~goal_1_placed)*jnp.zeros((h*w), dtype=jnp.uint8)
@@ -342,12 +378,26 @@ class UEDOvercooked(environment.Environment):
         agents_obj_occupied_mask = agents_obj_occupied_mask.at[
             goal_pos_1_idx_enc].set(True)
         wall_map = wall_map.at[goal_pos_1_idx_enc].set(True)
+        print(f"🟢 Final Object Grid - Goals:\n{goal_1_pos}")
+
+        # Verify Goal Position
+        print(f"📍 Goal Position Index: {goal_pos_1_idx}, Encoded Value: {enc[goal_pos_1_idx]}, Mapped Position: {goal_pos_1_idx_enc}")
+        ##############################
 
         is_occupied = agents_obj_occupied_mask[enc[onion_pos_1_idx]] == 1
         onion_pos_1_idx_enc = is_occupied*jax.random.choice(key, jnp.arange(
             h*w), shape=(), p=jnp.logical_not(agents_obj_occupied_mask)) + jnp.logical_not(is_occupied)*enc[onion_pos_1_idx]
-        onion_1_placed = state.time > jnp.array(
-            [onion_pos_1_idx], dtype=jnp.uint8)
+        # onion_1_placed = state.time > jnp.array(
+        #     [onion_pos_1_idx], dtype=jnp.uint8)
+        onion_1_placed = jnp.array(True, dtype=jnp.bool_)
+
+        #######################
+        print(f"🔍 Encoded Onion Position Index: {onion_pos_1_idx}")
+        print(f"📍 Mapped Onion Position (Flat Index): {onion_pos_1_idx_enc}")
+        print(f"✅ Is Occupied Before Placement? {is_occupied}")
+        print(f"⏳ Time Step: {state.time}, Onion Placement Condition: {onion_1_placed}")
+        #######################
+            
         onion_1_pos = \
             onion_1_placed*jnp.zeros((h*w), dtype=jnp.uint8).at[onion_pos_1_idx_enc].set(1) \
             + (~onion_1_placed)*jnp.zeros((h*w), dtype=jnp.uint8)
@@ -355,12 +405,23 @@ class UEDOvercooked(environment.Environment):
         agents_obj_occupied_mask = agents_obj_occupied_mask.at[
             onion_pos_1_idx_enc].set(True)
         wall_map = wall_map.at[onion_pos_1_idx_enc].set(True)
+        print(f"🟢 Final Object Grid - Onions:\n{onion_1_pos.reshape(h, w)}")
+        # Verify Onion Position
+        print(f"🧅 Onion Position Index: {onion_pos_1_idx}, Encoded Value: {enc[onion_pos_1_idx]}, Mapped Position: {onion_pos_1_idx_enc}")
+        #######################################################
 
         is_occupied = agents_obj_occupied_mask[enc[pot_pos_1_idx]] == 1
         pot_pos_1_idx_enc = is_occupied*jax.random.choice(key, jnp.arange(
             h*w), shape=(), p=jnp.logical_not(agents_obj_occupied_mask)) + jnp.logical_not(is_occupied)*enc[pot_pos_1_idx]
-        pot_1_placed = state.time > jnp.array(
-            [pot_pos_1_idx], dtype=jnp.uint8)
+        pot_1_placed = jnp.array(True, dtype=jnp.bool_)
+
+        ###################################################
+        print(f"🔍 Encoded Pot Position Index: {pot_pos_1_idx}")
+        print(f"📍 Mapped Pot Position (Flat Index): {pot_pos_1_idx_enc}")
+        print(f"✅ Is Occupied Before Placement? {is_occupied}")
+        print(f"⏳ Time Step: {state.time}, Pot Placement Condition: {pot_1_placed}")
+        #########################################
+
         pot_1_pos = \
             pot_1_placed*jnp.zeros((h*w), dtype=jnp.uint8).at[pot_pos_1_idx_enc].set(1) \
             + (~pot_1_placed)*jnp.zeros((h*w), dtype=jnp.uint8)
@@ -368,12 +429,26 @@ class UEDOvercooked(environment.Environment):
         agents_obj_occupied_mask = agents_obj_occupied_mask.at[
             pot_pos_1_idx_enc].set(True)
         wall_map = wall_map.at[pot_pos_1_idx_enc].set(True)
+        print(f"🟢 Final Object Grid - Pots:\n{pot_1_pos}")
+
+
+        # Verify Pot Position
+        print(f"🍲 Pot Position Index: {pot_pos_1_idx}, Encoded Value: {enc[pot_pos_1_idx]}, Mapped Position: {pot_pos_1_idx_enc}")
+
+
 
         is_occupied = agents_obj_occupied_mask[enc[bowl_pos_1_idx]] == 1
         bowl_pos_1_idx_enc = is_occupied*jax.random.choice(key, jnp.arange(
             h*w), shape=(), p=jnp.logical_not(agents_obj_occupied_mask)) + jnp.logical_not(is_occupied)*enc[bowl_pos_1_idx]
-        bowl_1_placed = state.time > jnp.array(
-            [bowl_pos_1_idx], dtype=jnp.uint8)
+        bowl_1_placed = jnp.array(True, dtype=jnp.bool_)
+
+        ###################################################
+        print(f"🔍 Encoded Plate Position Index: {bowl_pos_1_idx}")
+        print(f"📍 Mapped Plate Position (Flat Index): {bowl_pos_1_idx_enc}")
+        print(f"✅ Is Occupied Before Placement? {is_occupied}")
+        print(f"⏳ Time Step: {state.time}, Plate Placement Condition: {bowl_1_placed}")
+        #########################################
+
         bowl_1_pos = \
             bowl_1_placed*jnp.zeros((h*w), dtype=jnp.uint8).at[bowl_pos_1_idx_enc].set(1) \
             + (~bowl_1_placed)*jnp.zeros((h*w), dtype=jnp.uint8)
@@ -381,6 +456,11 @@ class UEDOvercooked(environment.Environment):
         agents_obj_occupied_mask = agents_obj_occupied_mask.at[
             bowl_pos_1_idx_enc].set(True)
         wall_map = wall_map.at[bowl_pos_1_idx_enc].set(True)
+        print(f"🟢 Final Object Grid - Plates:\n{bowl_1_pos}")
+
+        # Verify Plate Position
+        print(f"🍽 Plate Position Index: {bowl_pos_1_idx}, Encoded Value: {enc[bowl_pos_1_idx]}, Mapped Position: {bowl_pos_1_idx_enc}")
+        #####################debugging####################
 
         # agent_dir_idx = jnp.floor((4*enc[-1]/self.n_tiles)).astype(jnp.uint8)
         key, subkey = jax.random.split(key)
@@ -534,9 +614,21 @@ class UEDOvercooked(environment.Environment):
     
     def get_max_objects(self):
         """Determine the maximum number of each object type in the environment."""
+
+        # Reset the environment and get an initial state
         state = self.reset_env(jax.random.PRNGKey(0))[1]
+
+        # Get environment instance representation
         instance = self.get_env_instance(jax.random.PRNGKey(0), state)
 
+        # Debugging: Print instance object positions
+        print("Instance Object Positions:")
+        print(f"Onion Piles:\n{instance.onion_pile_pos}")
+        print(f"Pots:\n{instance.pot_pos}")
+        print(f"Plates:\n{instance.plate_pile_pos}")
+        print(f"Goals:\n{instance.goal_pos}")
+
+        # Compute maximum number of each object type
         max_onions = jnp.sum(instance.onion_pile_pos)    # Count of onion piles
         max_pots = jnp.sum(instance.pot_pos)            # Count of cooking pots
         max_plates = jnp.sum(instance.plate_pile_pos)   # Count of plate piles
@@ -547,15 +639,17 @@ class UEDOvercooked(environment.Environment):
         print(f"Max Objects -> Onions: {max_onions}, Pots: {max_pots}, Plates: {max_plates}, Goals: {max_goals}")
 
         return total_objects  # Total number of objects in the environment
+
+
     
-    def obj_centric_repre(self):
-        grid_size = self.n_tiles
-        obj_cent = jnp.zeros((self.params.height, self.params.width))
-        h = self.params.height 
-        w=self.params.width
-        for i in range(h):
-            for j in range(w):
-                obj_cent[i][j]
+    # def obj_centric_repre(self):
+    #     grid_size = self.n_tiles
+    #     obj_cent = jnp.zeros((self.params.height, self.params.width))
+    #     h = self.params.height 
+    #     w=self.params.width
+    #     for i in range(h):
+    #         for j in range(w):
+    #             obj_cent[i][j]
 
 
 if __name__ == "__main__":
@@ -566,8 +660,8 @@ if __name__ == "__main__":
     # object_positions, object_status = env.get_object_representation(state)
     ss = env.get_max_objects()
     print(ss)
-    print("Object Positions:\n", object_positions)
-    print("Object Status:\n", object_status)
+    # print("Object Positions:\n", object_positions)
+    # print("Object Status:\n", object_status)
 
 
 if hasattr(__loader__, 'name'):
