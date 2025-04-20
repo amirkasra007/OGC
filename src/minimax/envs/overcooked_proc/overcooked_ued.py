@@ -252,7 +252,7 @@ class UEDOvercooked(environment.Environment):
         enc = state.encoding
 
         # 🛑 Debugging: Print the full encoding array
-        print("🔍 Encoding Array:", enc)
+        # print("🔍 Encoding Array:", enc)
 
         # Extract object positions from encoding
         if params.fixed_n_wall_steps:
@@ -271,7 +271,7 @@ class UEDOvercooked(environment.Environment):
             bowl_pos_1_idx = agent_pos_1_idx - 9
 
         # 🛑 Debugging: Print extracted object positions
-        print(f"📍 Object Positions (Encoded) -> Goal: {enc[goal_pos_1_idx]}, Onion: {enc[onion_pos_1_idx]}, Pot: {enc[pot_pos_1_idx]}, Plate: {enc[bowl_pos_1_idx]}")
+        # print(f"📍 Object Positions (Encoded) -> Goal: {enc[goal_pos_1_idx]}, Onion: {enc[onion_pos_1_idx]}, Pot: {enc[pot_pos_1_idx]}, Plate: {enc[bowl_pos_1_idx]}")
 
         # 🛑 Debugging: Check if indices are valid
         max_grid_idx = h * w - 1
@@ -296,9 +296,8 @@ class UEDOvercooked(environment.Environment):
                 enc_len = n_walls + 11
 
         # 🛑 Debugging: Print wall positions and number of walls
-        print(f"🧱 Wall Positions (Encoded): {wall_pos_idx}")
-        print(f"🏗️ Number of Walls: {n_walls}")
-
+        # print(f"🧱 Wall Positions (Encoded): {wall_pos_idx}")
+        # print(f"🏗️ Number of Walls: {n_walls}")
 
 
 
@@ -322,8 +321,6 @@ class UEDOvercooked(environment.Environment):
 
         occupied_mask = wall_map
         print(f"🛑 Occupied Mask:\n{occupied_mask.reshape(self.params.height, self.params.width)}")
-
-
 
         """Agents should always end up on an empty square. If they are placed on a wall pick randomly."""
         is_occupied = occupied_mask[enc[agent_pos_1_idx]] == 1
@@ -366,10 +363,10 @@ class UEDOvercooked(environment.Environment):
             h*w), shape=(), p=jnp.logical_not(agents_obj_occupied_mask)) + jnp.logical_not(is_occupied)*enc[goal_pos_1_idx]
         goal_1_placed = jnp.array(True, dtype=jnp.bool_)
 
-        print(f"🔍 Encoded Goal Position Index: {goal_pos_1_idx}")
-        print(f"📍 Mapped Goal Position (Flat Index): {goal_pos_1_idx_enc}")
-        print(f"✅ Is Occupied Before Placement? {is_occupied}")
-        print(f"⏳ Time Step: {state.time}, Goal Placement Condition: {goal_1_placed}")
+        # print(f"🔍 Encoded Goal Position Index: {goal_pos_1_idx}")
+        # print(f"📍 Mapped Goal Position (Flat Index): {goal_pos_1_idx_enc}")
+        # print(f"✅ Is Occupied Before Placement? {is_occupied}")
+        # print(f"⏳ Time Step: {state.time}, Goal Placement Condition: {goal_1_placed}")
 
         goal_1_pos = \
             goal_1_placed*jnp.zeros((h*w), dtype=jnp.uint8).at[goal_pos_1_idx_enc].set(1) \
@@ -378,10 +375,10 @@ class UEDOvercooked(environment.Environment):
         agents_obj_occupied_mask = agents_obj_occupied_mask.at[
             goal_pos_1_idx_enc].set(True)
         wall_map = wall_map.at[goal_pos_1_idx_enc].set(True)
-        print(f"🟢 Final Object Grid - Goals:\n{goal_1_pos}")
+        # print(f"🟢 Final Object Grid - Goals:\n{goal_1_pos}")
 
         # Verify Goal Position
-        print(f"📍 Goal Position Index: {goal_pos_1_idx}, Encoded Value: {enc[goal_pos_1_idx]}, Mapped Position: {goal_pos_1_idx_enc}")
+        # print(f"📍 Goal Position Index: {goal_pos_1_idx}, Encoded Value: {enc[goal_pos_1_idx]}, Mapped Position: {goal_pos_1_idx_enc}")
         ##############################
 
         is_occupied = agents_obj_occupied_mask[enc[onion_pos_1_idx]] == 1
@@ -392,10 +389,10 @@ class UEDOvercooked(environment.Environment):
         onion_1_placed = jnp.array(True, dtype=jnp.bool_)
 
         #######################
-        print(f"🔍 Encoded Onion Position Index: {onion_pos_1_idx}")
-        print(f"📍 Mapped Onion Position (Flat Index): {onion_pos_1_idx_enc}")
-        print(f"✅ Is Occupied Before Placement? {is_occupied}")
-        print(f"⏳ Time Step: {state.time}, Onion Placement Condition: {onion_1_placed}")
+        # print(f"🔍 Encoded Onion Position Index: {onion_pos_1_idx}")
+        # print(f"📍 Mapped Onion Position (Flat Index): {onion_pos_1_idx_enc}")
+        # print(f"✅ Is Occupied Before Placement? {is_occupied}")
+        # print(f"⏳ Time Step: {state.time}, Onion Placement Condition: {onion_1_placed}")
         #######################
             
         onion_1_pos = \
@@ -405,9 +402,9 @@ class UEDOvercooked(environment.Environment):
         agents_obj_occupied_mask = agents_obj_occupied_mask.at[
             onion_pos_1_idx_enc].set(True)
         wall_map = wall_map.at[onion_pos_1_idx_enc].set(True)
-        print(f"🟢 Final Object Grid - Onions:\n{onion_1_pos.reshape(h, w)}")
+        # print(f"🟢 Final Object Grid - Onions:\n{onion_1_pos.reshape(h, w)}")
         # Verify Onion Position
-        print(f"🧅 Onion Position Index: {onion_pos_1_idx}, Encoded Value: {enc[onion_pos_1_idx]}, Mapped Position: {onion_pos_1_idx_enc}")
+        # print(f"🧅 Onion Position Index: {onion_pos_1_idx}, Encoded Value: {enc[onion_pos_1_idx]}, Mapped Position: {onion_pos_1_idx_enc}")
         #######################################################
 
         is_occupied = agents_obj_occupied_mask[enc[pot_pos_1_idx]] == 1
@@ -416,10 +413,10 @@ class UEDOvercooked(environment.Environment):
         pot_1_placed = jnp.array(True, dtype=jnp.bool_)
 
         ###################################################
-        print(f"🔍 Encoded Pot Position Index: {pot_pos_1_idx}")
-        print(f"📍 Mapped Pot Position (Flat Index): {pot_pos_1_idx_enc}")
-        print(f"✅ Is Occupied Before Placement? {is_occupied}")
-        print(f"⏳ Time Step: {state.time}, Pot Placement Condition: {pot_1_placed}")
+        # print(f"🔍 Encoded Pot Position Index: {pot_pos_1_idx}")
+        # print(f"📍 Mapped Pot Position (Flat Index): {pot_pos_1_idx_enc}")
+        # print(f"✅ Is Occupied Before Placement? {is_occupied}")
+        # print(f"⏳ Time Step: {state.time}, Pot Placement Condition: {pot_1_placed}")
         #########################################
 
         pot_1_pos = \
@@ -429,12 +426,11 @@ class UEDOvercooked(environment.Environment):
         agents_obj_occupied_mask = agents_obj_occupied_mask.at[
             pot_pos_1_idx_enc].set(True)
         wall_map = wall_map.at[pot_pos_1_idx_enc].set(True)
-        print(f"🟢 Final Object Grid - Pots:\n{pot_1_pos}")
+        # print(f"🟢 Final Object Grid - Pots:\n{pot_1_pos}")
 
 
         # Verify Pot Position
-        print(f"🍲 Pot Position Index: {pot_pos_1_idx}, Encoded Value: {enc[pot_pos_1_idx]}, Mapped Position: {pot_pos_1_idx_enc}")
-
+        # print(f"🍲 Pot Position Index: {pot_pos_1_idx}, Encoded Value: {enc[pot_pos_1_idx]}, Mapped Position: {pot_pos_1_idx_enc}")
 
 
         is_occupied = agents_obj_occupied_mask[enc[bowl_pos_1_idx]] == 1
@@ -443,10 +439,10 @@ class UEDOvercooked(environment.Environment):
         bowl_1_placed = jnp.array(True, dtype=jnp.bool_)
 
         ###################################################
-        print(f"🔍 Encoded Plate Position Index: {bowl_pos_1_idx}")
-        print(f"📍 Mapped Plate Position (Flat Index): {bowl_pos_1_idx_enc}")
-        print(f"✅ Is Occupied Before Placement? {is_occupied}")
-        print(f"⏳ Time Step: {state.time}, Plate Placement Condition: {bowl_1_placed}")
+        # print(f"🔍 Encoded Plate Position Index: {bowl_pos_1_idx}")
+        # print(f"📍 Mapped Plate Position (Flat Index): {bowl_pos_1_idx_enc}")
+        # print(f"✅ Is Occupied Before Placement? {is_occupied}")
+        # print(f"⏳ Time Step: {state.time}, Plate Placement Condition: {bowl_1_placed}")
         #########################################
 
         bowl_1_pos = \
@@ -456,10 +452,10 @@ class UEDOvercooked(environment.Environment):
         agents_obj_occupied_mask = agents_obj_occupied_mask.at[
             bowl_pos_1_idx_enc].set(True)
         wall_map = wall_map.at[bowl_pos_1_idx_enc].set(True)
-        print(f"🟢 Final Object Grid - Plates:\n{bowl_1_pos}")
+        # print(f"🟢 Final Object Grid - Plates:\n{bowl_1_pos}")
 
         # Verify Plate Position
-        print(f"🍽 Plate Position Index: {bowl_pos_1_idx}, Encoded Value: {enc[bowl_pos_1_idx]}, Mapped Position: {bowl_pos_1_idx_enc}")
+        # print(f"🍽 Plate Position Index: {bowl_pos_1_idx}, Encoded Value: {enc[bowl_pos_1_idx]}, Mapped Position: {bowl_pos_1_idx_enc}")
         #####################debugging####################
 
         # agent_dir_idx = jnp.floor((4*enc[-1]/self.n_tiles)).astype(jnp.uint8)
@@ -511,7 +507,7 @@ class UEDOvercooked(environment.Environment):
             noise=jnp.zeros(self.params.noise_dim, dtype=jnp.float32),
         ))
 
-    def get_obs(self, state: UEDEnvState):
+    def get_obs(self, state: UEDEnvState, flatten_objects: bool = False):
         instance = self.get_env_instance(jax.random.PRNGKey(0), state)
         h = self.params.height
         w = self.params.width
@@ -542,9 +538,17 @@ class UEDOvercooked(environment.Environment):
         )
 
         padding = 4
+
+
+        obj_tensor = self.get_object_representation(state)
+
+        if flatten_objects:
+            obj_tensor = obj_tensor.reshape(-1)  # flatten to 1D
+
         return OrderedDict(dict(
             image=maze_map[padding:-padding, padding:-padding, :],
             time=state.time,
+            objects=obj_tensor,
         ))
 
     @property
@@ -641,25 +645,123 @@ class UEDOvercooked(environment.Environment):
         return total_objects  # Total number of objects in the environment
 
 
-    
-    # def obj_centric_repre(self):
-    #     grid_size = self.n_tiles
-    #     obj_cent = jnp.zeros((self.params.height, self.params.width))
-    #     h = self.params.height 
-    #     w=self.params.width
-    #     for i in range(h):
-    #         for j in range(w):
-    #             obj_cent[i][j]
+    # def get_object_representation(self, state: UEDEnvState) -> jnp.ndarray:
+    #     """
+    #     Returns a 3D binary array of shape (height, width, num_object_types)
+    #     representing the spatial presence of objects: onion, pot, plate, goal.
+    #     This is suitable for agent-friendly input.
+    #     """
+    #     key = jax.random.PRNGKey(0)  # Use a fixed seed or pass in externally
+    #     instance = self.get_env_instance(key, state)
+    #     h, w = self.params.height, self.params.width
+
+    #     object_layers = []
+
+    #     # Each object is a binary map of shape (h, w)
+    #     for obj_map in [
+    #         instance.onion_pile_pos,
+    #         instance.pot_pos,
+    #         instance.plate_pile_pos,
+    #         instance.goal_pos
+    #     ]:
+    #         object_layers.append(obj_map.reshape(h, w))
+
+    #     # Stack along channel dimension to form (h, w, 4)
+    #     unified_object_grid = jnp.stack(object_layers, axis=-1)
+
+    #     return unified_object_grid
+
+
+    def get_object_representation(self, state: UEDEnvState) -> jnp.ndarray:
+        """Returns a dynamic, agent-friendly object-centric representation tensor."""
+
+        instance = self.get_env_instance(jax.random.PRNGKey(0), state)
+        h, w = self.params.height, self.params.width
+
+        # === Core object maps ===
+        onion_map = instance.onion_pile_pos
+        pot_map = instance.pot_pos
+        plate_map = instance.plate_pile_pos
+        goal_map = instance.goal_pos
+
+        # === Agent position maps ===
+        agent_maps = []
+        for i in range(2):  # Assuming 2 agents
+            agent_pos = instance.agent_pos[i]
+            agent_map = jnp.zeros((h, w), dtype=jnp.uint8).at[agent_pos[1], agent_pos[0]].set(1)
+            agent_maps.append(agent_map)
+
+        # === Wall map ===
+        wall_map = instance.wall_map.astype(jnp.uint8)
+
+        # === Stack all features into a single tensor ===
+        object_tensor = jnp.stack([
+            onion_map,        # [h, w]
+            pot_map,          # [h, w]
+            plate_map,        # [h, w]
+            goal_map,         # [h, w]
+            agent_maps[0],    # [h, w]
+            agent_maps[1],    # [h, w]
+            wall_map          # [h, w]
+        ], axis=-1)  # [h, w, 7]
+
+        print(f"📦 Final Agent-Friendly Object Tensor Shape: {object_tensor.shape}")
+        print(f"Agent-Friendly Object Tensor: {object_tensor}")
+        return object_tensor
+
 
 
 if __name__ == "__main__":
     env = UEDOvercooked()
     rng = jax.random.PRNGKey(42)
+
+    # Reset environment and get initial state
     obs, state = env.reset_env(rng)
 
+
+    obj_grid = env.get_object_representation(state)
+    print("🔁 Unified Object Grid Shape:", obj_grid.shape)
+
+    obj_types = ['onion', 'pot', 'plate', 'goal']
+    for i, name in enumerate(obj_types):
+        print(f"🗺️ {name.capitalize()} Map:\n{obj_grid[:, :, i]}")
+
+
+    # object_maps = env.get_object_representation(state)
+    # for obj_type, grid in object_maps.items():
+    #     print(f"🗺️ Object Map: {obj_type}")
+    #     print(grid)
+
+    # print("✅ Initial Environment Encoding:")
+    # print(state.encoding)
+
+    # for t in range(10):  # Simulate 10 timesteps
+
+    #     # Sample a random action
+    #     action = jax.random.randint(rng, shape=(), minval=0, maxval=env.num_actions)
+
+    #     # Step environment
+    #     obs, state, reward, done, _ = env.step_env(rng, state, action)
+
+    #     print(f"\n--- Timestep {t+1} ---")
+    #     print(f"Action taken: {action}")
+    #     print(f"Current Encoding: {state.encoding}")
+
+    #     # Get and print environment instance
+    #     instance = env.get_env_instance(rng, state)
+    #     print("Onion Grid:\n", instance.onion_pile_pos)
+    #     print("Pot Grid:\n", instance.pot_pos)
+    #     print("Plate Grid:\n", instance.plate_pile_pos)
+    #     print("Goal Grid:\n", instance.goal_pos)
+
+    #     if done:
+    #         print("🛑 Environment reached terminal state.")
+    #         break
+
+
     # object_positions, object_status = env.get_object_representation(state)
-    ss = env.get_max_objects()
-    print(ss)
+    # max_obj = env.get_max_objects()
+    # print(max_obj)
     # print("Object Positions:\n", object_positions)
     # print("Object Status:\n", object_status)
 

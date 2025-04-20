@@ -251,7 +251,16 @@ class ACStudentActorModel(BasicModel):
                 hxs: B x hx_dim hidden states
                 masks: B length vector of done masks
         """
-        img = x
+        if isinstance(x, dict):
+            img = x['image']
+            obj = x.get('objects', None)
+
+            if obj is not None:
+                x = jnp.concatenate([img, obj], axis=-1)
+            else:
+                x = img
+        else:
+            img = x
 
         if self.rnn is not None:
             batch_dims = img.shape[:-3]
@@ -300,7 +309,15 @@ class ACStudentActorModelMlp(BasicModel):
                 hxs: B x hx_dim hidden states
                 masks: B length vector of done masks
         """
-        img = x
+        if isinstance(x, dict):
+            if 'image' in x:
+                img = x['image']
+            elif 'objects' in x:
+                img = x['objects']
+            else:
+                raise ValueError("Observation must include 'image' or 'objects'")
+        else:
+            img = x
 
         if self.rnn is not None:
             batch_dims = img.shape[:-1]
@@ -333,7 +350,16 @@ class ACStudentCriticModel(BasicModel):
                 hxs: B x hx_dim hidden states
                 masks: B length vector of done masks
         """
-        img = x
+        if isinstance(x, dict):
+            img = x['image']
+            obj = x.get('objects', None)
+
+            if obj is not None:
+                x = jnp.concatenate([img, obj], axis=-1)
+            else:
+                x = img
+        else:
+            img = x
 
         if self.rnn is not None:
             batch_dims = img.shape[:-3]
@@ -381,7 +407,15 @@ class ACStudentCriticModelMlp(BasicModel):
                 hxs: B x hx_dim hidden states
                 masks: B length vector of done masks
         """
-        img = x
+        if isinstance(x, dict):
+            if 'image' in x:
+                img = x['image']
+            elif 'objects' in x:
+                img = x['objects']
+            else:
+                raise ValueError("Observation must include 'image' or 'objects'")
+        else:
+            img = x
 
         if self.rnn is not None:
             batch_dims = img.shape[:-1]
@@ -416,7 +450,16 @@ class ACStudentModel(BasicModel):
                 hxs: B x hx_dim hidden states
                 masks: B length vector of done masks
         """
-        img = x
+        if isinstance(x, dict):
+            img = x['image']
+            obj = x.get('objects', None)
+
+            if obj is not None:
+                x = jnp.concatenate([img, obj], axis=-1)
+            else:
+                x = img
+        else:
+            img = x
 
         if self.rnn is not None:
             batch_dims = img.shape[:-3]
@@ -457,7 +500,17 @@ class ACTeacherModel(BasicModel):
                 hxs: B x hx_dim hidden states
                 masks: B length vector of done masks
         """
-        img = x['image']
+        if isinstance(x, dict):
+            img = x['image']
+            obj = x.get('objects', None)
+
+            if obj is not None:
+                x = jnp.concatenate([img, obj], axis=-1)
+            else:
+                x = img
+        else:
+            img = x
+
         time = x['time']
         noise = x.get('noise')
         aux = x.get('aux')
