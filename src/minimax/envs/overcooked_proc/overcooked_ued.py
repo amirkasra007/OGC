@@ -143,6 +143,7 @@ class UEDOvercooked(environment.Environment):
         )
 
         print("Initialized Encoding in reset_env:", encoding)  # Debugging print
+        print(f"✅ [UEDOvercooked] Environment reset with params: height={self.params.height}, width={self.params.width}, n_walls={self.params.n_walls}")
 
         obs = self._add_noise_to_obs(
             noise_rng,

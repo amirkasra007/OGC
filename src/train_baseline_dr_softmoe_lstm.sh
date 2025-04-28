@@ -1,8 +1,23 @@
-DEFAULTVALUE=4
+#!/bin/bash
+source ~/anaconda3/etc/profile.d/conda.sh
+conda activate ogc
+
+export LD_LIBRARY_PATH=$HOME/cudnn-8.9.5/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+export CUDNN_INCLUDE_DIR=$HOME/cudnn-8.9.5/include
+export CUDA_HOME=/usr/local/cuda-12.2
+export LD_PRELOAD=$HOME/cudnn-8.9.5/lib/libcudnn.so
+
 DEFAULTSEED=2
-device="${1:-$DEFAULTVALUE}"
-seed="${2:-$DEFAULTSEED}"
-CUDA_VISIBLE_DEVICES=${device} XLA_PYTHON_CLIENT_MEM_FRACTION=.40 LD_LIBRARY_PATH="" nice -n 5 python3 -m minimax.train \
+seed="${1:-$DEFAULTSEED}"
+
+# Debug output:
+echo "Python: $(which python)"
+python --version
+echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
+echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
+nvidia-smi
+
+CUDA_VISIBLE_DEVICES=3 XLA_PYTHON_CLIENT_MEM_FRACTION=.40 nice -n 5 python3 -m minimax.train \
 --wandb_mode=online \
 --wandb_project=overcooked-minimax-jax \
 --wandb_entity=${WANDB_ENTITY} \
