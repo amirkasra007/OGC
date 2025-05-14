@@ -539,9 +539,7 @@ class UEDOvercooked(environment.Environment):
         )
 
         padding = 4
-
-
-        obj_tensor = self.get_object_representation(state)
+        obj_tensor = self.get_object_representation(state, maze_map[padding:-padding, padding:-padding, :])
 
         if flatten_objects:
             obj_tensor = obj_tensor.reshape(-1)  # flatten to 1D
@@ -645,39 +643,14 @@ class UEDOvercooked(environment.Environment):
 
         return total_objects  # Total number of objects in the environment
 
-
-    # def get_object_representation(self, state: UEDEnvState) -> jnp.ndarray:
-    #     """
-    #     Returns a 3D binary array of shape (height, width, num_object_types)
-    #     representing the spatial presence of objects: onion, pot, plate, goal.
-    #     This is suitable for agent-friendly input.
-    #     """
-    #     key = jax.random.PRNGKey(0)  # Use a fixed seed or pass in externally
-    #     instance = self.get_env_instance(key, state)
-    #     h, w = self.params.height, self.params.width
-
-    #     object_layers = []
-
-    #     # Each object is a binary map of shape (h, w)
-    #     for obj_map in [
-    #         instance.onion_pile_pos,
-    #         instance.pot_pos,
-    #         instance.plate_pile_pos,
-    #         instance.goal_pos
-    #     ]:
-    #         object_layers.append(obj_map.reshape(h, w))
-
-    #     # Stack along channel dimension to form (h, w, 4)
-    #     unified_object_grid = jnp.stack(object_layers, axis=-1)
-
-    #     return unified_object_grid
-
-
-    def get_object_representation(self, state: UEDEnvState) -> jnp.ndarray:
+    def get_object_representation(self, state: UEDEnvState, maze_map: jnp.ndarray ) -> jnp.ndarray:
         """Returns a dynamic, agent-friendly object-centric representation tensor."""
 
         instance = self.get_env_instance(jax.random.PRNGKey(0), state)
         h, w = self.params.height, self.params.width
+
+        # === Extract object layer ===
+        object_layer = maze_map[..., 0]  # maze_map: [h+pad, w+pad, 3] → object types in [:, :, 0]
 
         # === Core object maps ===
         onion_map = instance.onion_pile_pos
@@ -695,6 +668,12 @@ class UEDOvercooked(environment.Environment):
         # === Wall map ===
         wall_map = instance.wall_map.astype(jnp.uint8)
 
+        # === Dynamic loose items ===
+        loose_onion_map = (object_layer == OBJECT_TO_INDEX['onion']).astype(jnp.uint8)
+        loose_plate_map = (object_layer == OBJECT_TO_INDEX['plate']).astype(jnp.uint8)
+        loose_dish_map  = (object_layer == OBJECT_TO_INDEX['dish']).astype(jnp.uint8)
+
+
         # === Stack all features into a single tensor ===
         object_tensor = jnp.stack([
             onion_map,        # [h, w]
@@ -703,14 +682,15 @@ class UEDOvercooked(environment.Environment):
             goal_map,         # [h, w]
             agent_maps[0],    # [h, w]
             agent_maps[1],    # [h, w]
-            wall_map          # [h, w]
+            wall_map,          # [h, w]
+            loose_onion_map,   # new
+            loose_plate_map,   # new
+            loose_dish_map     # new
         ], axis=-1)  # [h, w, 7]
 
-        print(f"📦 Final Agent-Friendly Object Tensor Shape: {object_tensor.shape}")
+        print(f"Final Agent-Friendly Object Tensor Shape: {object_tensor.shape}")
         print(f"Agent-Friendly Object Tensor: {object_tensor}")
         return object_tensor
-
-
 
 if __name__ == "__main__":
     env = UEDOvercooked()
@@ -719,53 +699,12 @@ if __name__ == "__main__":
     # Reset environment and get initial state
     obs, state = env.reset_env(rng)
 
-
     obj_grid = env.get_object_representation(state)
-    print("🔁 Unified Object Grid Shape:", obj_grid.shape)
+    print("Unified Object Grid Shape:", obj_grid.shape)
 
     obj_types = ['onion', 'pot', 'plate', 'goal']
     for i, name in enumerate(obj_types):
         print(f"🗺️ {name.capitalize()} Map:\n{obj_grid[:, :, i]}")
-
-
-    # object_maps = env.get_object_representation(state)
-    # for obj_type, grid in object_maps.items():
-    #     print(f"🗺️ Object Map: {obj_type}")
-    #     print(grid)
-
-    # print("✅ Initial Environment Encoding:")
-    # print(state.encoding)
-
-    # for t in range(10):  # Simulate 10 timesteps
-
-    #     # Sample a random action
-    #     action = jax.random.randint(rng, shape=(), minval=0, maxval=env.num_actions)
-
-    #     # Step environment
-    #     obs, state, reward, done, _ = env.step_env(rng, state, action)
-
-    #     print(f"\n--- Timestep {t+1} ---")
-    #     print(f"Action taken: {action}")
-    #     print(f"Current Encoding: {state.encoding}")
-
-    #     # Get and print environment instance
-    #     instance = env.get_env_instance(rng, state)
-    #     print("Onion Grid:\n", instance.onion_pile_pos)
-    #     print("Pot Grid:\n", instance.pot_pos)
-    #     print("Plate Grid:\n", instance.plate_pile_pos)
-    #     print("Goal Grid:\n", instance.goal_pos)
-
-    #     if done:
-    #         print("🛑 Environment reached terminal state.")
-    #         break
-
-
-    # object_positions, object_status = env.get_object_representation(state)
-    # max_obj = env.get_max_objects()
-    # print(max_obj)
-    # print("Object Positions:\n", object_positions)
-    # print("Object Status:\n", object_status)
-
 
 if hasattr(__loader__, 'name'):
     module_path = __loader__.name
@@ -773,18 +712,3 @@ elif hasattr(__loader__, 'fullname'):
     module_path = __loader__.fullname
 
 register_ued(env_id='Overcooked', entry_point=module_path + ':UEDOvercooked')
-
-
-
-# env = UEDOvercooked()
-
-# # Reset environment and get initial state
-# rng = jax.random.PRNGKey(42)
-# obs, state = env.reset_env(rng)
-
-# # Get object representation
-# # object_positions, object_status = env.get_object_representation(state)
-# ss = env.get_max_objects()
-# print(ss)
-# # print("Object Positions:\n", object_positions)
-# # print("Object Status:\n", object_status)
