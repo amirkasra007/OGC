@@ -242,6 +242,10 @@ class UEDOvercooked(environment.Environment):
             {},
         )
 
+    def _one_hot_inventory_map(self, obj_id, pos, h, w):
+        """Return a (h, w) map with 1 at agent pos if holding obj_id, else all 0."""
+        return jnp.zeros((h, w), dtype=jnp.uint8).at[pos[1], pos[0]].set(1 if obj_id else 0)
+
     def get_env_instance(self, key: chex.PRNGKey, state: UEDEnvState) -> chex.Array:
         """
         Converts internal encoding to an instance encoding that 
@@ -299,8 +303,6 @@ class UEDOvercooked(environment.Environment):
         # 🛑 Debugging: Print wall positions and number of walls
         # print(f"🧱 Wall Positions (Encoded): {wall_pos_idx}")
         # print(f"🏗️ Number of Walls: {n_walls}")
-
-
 
         # Make wall map
         wall_start_time = jnp.logical_and(  # 1 if explicitly predict # blocks, else 0
@@ -652,6 +654,16 @@ class UEDOvercooked(environment.Environment):
         # === Extract object layer ===
         object_layer = maze_map[..., 0]  # maze_map: [h+pad, w+pad, 3] → object types in [:, :, 0]
 
+        # shape: (h, w, 3) — the 3rd channel is pot status
+        pot_status_layer = maze_map[:, :, 2]  # dtype: uint8
+
+        # Only apply to pot locations
+        pot_mask = maze_map[:, :, 0] == OBJECT_TO_INDEX["pot"]
+
+        # Normalize the pot status to [0, 1]
+        POT_MAX_TIMER = 23  # defined elsewhere
+        normalized_pot_status = pot_mask * (1.0 - (pot_status_layer / POT_MAX_TIMER))  # 1 = ready
+
         # === Core object maps ===
         onion_map = instance.onion_pile_pos
         pot_map = instance.pot_pos
@@ -667,12 +679,59 @@ class UEDOvercooked(environment.Environment):
 
         # === Wall map ===
         wall_map = instance.wall_map.astype(jnp.uint8)
+        
+        n_object_types = len(OBJECT_TO_INDEX)
+        object_one_hot = jax.nn.one_hot(object_layer, num_classes=n_object_types, dtype=jnp.uint8)  # shape: (h, w, n_types)
+
+
+        # === Agent direction maps ===
+        dir_maps_0 = []
+        dir_maps_1 = []
+        agent_dir_0 = instance.agent_dir_idx[0]
+        agent_dir_1 = instance.agent_dir_idx[1]
+
+        for dir_idx in range(4):  # 4 directions: up, right, down, left
+            dir_map_0 = jnp.zeros((h, w), dtype=jnp.uint8).at[
+                instance.agent_pos[0][1], instance.agent_pos[0][0]
+            ].set(1 if agent_dir_0 == dir_idx else 0)
+            dir_maps_0.append(dir_map_0)
+
+            dir_map_1 = jnp.zeros((h, w), dtype=jnp.uint8).at[
+                instance.agent_pos[1][1], instance.agent_pos[1][0]
+            ].set(1 if agent_dir_1 == dir_idx else 0)
+            dir_maps_1.append(dir_map_1)
+
+
+        # Get Inventory Info & Agent Positions
+        held_obj_0 = instance.agent_inv[0]
+        held_obj_1 = instance.agent_inv[1]
+        pos_0 = instance.agent_pos[0]
+        pos_1 = instance.agent_pos[1]
+
+        inv_onion_0 = jnp.where(held_obj_0 == OBJECT_TO_INDEX["onion"],
+                                self._one_hot_inventory_map(True, pos_0, h, w),
+                                jnp.zeros((h, w), dtype=jnp.uint8))
+
+        inv_plate_0 = jnp.where(held_obj_0 == OBJECT_TO_INDEX["plate"],
+                                self._one_hot_inventory_map(True, pos_0, h, w),
+                                jnp.zeros((h, w), dtype=jnp.uint8))
+
+        inv_onion_1 = jnp.where(held_obj_1 == OBJECT_TO_INDEX["onion"],
+                                self._one_hot_inventory_map(True, pos_1, h, w),
+                                jnp.zeros((h, w), dtype=jnp.uint8))
+
+        inv_plate_1 = jnp.where(held_obj_1 == OBJECT_TO_INDEX["plate"],
+                                self._one_hot_inventory_map(True, pos_1, h, w),
+                                jnp.zeros((h, w), dtype=jnp.uint8))
+
+        #Urgency Map
+        urgency_value = state.time / self.max_episode_steps()  # in [0, 1]
+        urgency_map = jnp.ones((h, w), dtype=jnp.float32) * urgency_value
 
         # === Dynamic loose items ===
         loose_onion_map = (object_layer == OBJECT_TO_INDEX['onion']).astype(jnp.uint8)
         loose_plate_map = (object_layer == OBJECT_TO_INDEX['plate']).astype(jnp.uint8)
         loose_dish_map  = (object_layer == OBJECT_TO_INDEX['dish']).astype(jnp.uint8)
-
 
         # === Stack all features into a single tensor ===
         object_tensor = jnp.stack([
@@ -683,10 +742,23 @@ class UEDOvercooked(environment.Environment):
             agent_maps[0],    # [h, w]
             agent_maps[1],    # [h, w]
             wall_map,          # [h, w]
-            loose_onion_map,   # new
-            loose_plate_map,   # new
-            loose_dish_map     # new
+            # loose_onion_map,   # new
+            # loose_plate_map,   # new
+            # loose_dish_map,
+            # normalized_pot_status
         ], axis=-1)  # [h, w, 7]
+
+        # object_tensor = jnp.concatenate([
+        #     object_tensor,
+        #     inv_onion_0[..., None],
+        #     inv_plate_0[..., None],
+        #     inv_onion_1[..., None],
+        #     inv_plate_1[..., None],
+        #     urgency_map[..., None],
+        #     *[m[..., None] for m in dir_maps_0],
+        #     *[m[..., None] for m in dir_maps_1],
+        #     object_one_hot
+        # ], axis=-1)
 
         print(f"Final Agent-Friendly Object Tensor Shape: {object_tensor.shape}")
         print(f"Agent-Friendly Object Tensor: {object_tensor}")
@@ -698,9 +770,34 @@ if __name__ == "__main__":
 
     # Reset environment and get initial state
     obs, state = env.reset_env(rng)
+    instance = env.get_env_instance(rng, state)
+    h, w = env.params.height, env.params.width
+    padding = 4
 
-    obj_grid = env.get_object_representation(state)
+    maze_map = make_overcooked_map(
+        wall_map=instance.wall_map,
+        goal_pos=instance.goal_pos,
+        agent_pos=instance.agent_pos,
+        agent_dir_idx=instance.agent_dir_idx,
+        plate_pile_pos=instance.plate_pile_pos,
+        onion_pile_pos=instance.onion_pile_pos,
+        pot_pos=instance.pot_pos,
+        pot_status=jnp.ones((instance.wall_map.reshape(-1).shape), dtype=jnp.uint8) * 23,
+        onion_pos=jnp.zeros((h, w), dtype=jnp.uint8),
+        plate_pos=jnp.zeros((h, w), dtype=jnp.uint8),
+        dish_pos=jnp.zeros((h, w), dtype=jnp.uint8),
+        pad_obs=True,
+        num_agents=2,
+        agent_view_size=5
+    )
+
+    # Pass cropped maze_map
+    maze_map_cropped = maze_map[padding:-padding, padding:-padding, :]
+    obj_grid = env.get_object_representation(state ,maze_map_cropped)
+
+    # obj_grid = env.get_object_representation(state)
     print("Unified Object Grid Shape:", obj_grid.shape)
+    print("Unified Object Grid Shape:", obj_grid)
 
     obj_types = ['onion', 'pot', 'plate', 'goal']
     for i, name in enumerate(obj_types):
