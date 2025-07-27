@@ -7,7 +7,7 @@ export CUDNN_INCLUDE_DIR=$HOME/cudnn-8.9.5/include
 export CUDA_HOME=/usr/local/cuda-12.2
 export LD_PRELOAD=$HOME/cudnn-8.9.5/lib/libcudnn.so
 
-DEFAULTSEED=2
+DEFAULTSEED=3
 seed="${1:-$DEFAULTSEED}"
 
 # Debug output:
@@ -17,7 +17,7 @@ echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
 nvidia-smi
 
-CUDA_VISIBLE_DEVICES=3 XLA_PYTHON_CLIENT_MEM_FRACTION=.40 nice -n 5 python3 -m minimax.train \
+CUDA_VISIBLE_DEVICES=2 XLA_PYTHON_CLIENT_MEM_FRACTION=.40 nice -n 5 python3 -m minimax.train \
 --wandb_mode=online \
 --wandb_project=overcooked-minimax-jax \
 --wandb_entity=${WANDB_ENTITY} \
