@@ -176,7 +176,9 @@ class ScannedRNN(nn.Module):
         # )
 
         rnn_state = jax.tree_map(
-            lambda x, y: jax.vmap(jax.lax.select)(reset, x, y),
+            # lambda x, y: jax.vmap(jax.lax.select)(reset, x, y),    #agent alon
+            lambda x, y: jax.vmap(jax.lax.select)(reset[0], x, y), ##ZSC
+            # lambda x, y: jax.vmap(jax.lax.select)(jnp.squeeze(reset, axis=0), x, y), ##ZSC
             ScannedRNN.initialize_carry(
                 jax.random.PRNGKey(0), (x.shape[0],), self.recurrent_hidden_dim, self.recurrent_arch),
             rnn_state

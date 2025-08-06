@@ -1,0 +1,12 @@
+{
+  "population_size": 3,
+  "0": "logs/minimax/SEED_1_dr-overcooked6x9w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0/checkpoint.pkl",
+  "0_meta": "logs/minimax/SEED_1_dr-overcooked6x9w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0/meta.json",
+  "1": "logs/minimax/SEED_2_dr-overcooked6x9w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0/checkpoint.pkl",
+  "1_meta": "logs/minimax/SEED_2_dr-overcooked6x9w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0/meta.json",
+  "2": "logs/minimax/SEED_3_dr-overcooked6x9w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0/checkpoint.pkl",
+  "2_meta": "logs/minimax/SEED_3_dr-overcooked6x9w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0/meta.json",
+  "3_meta": "logs/minimax/SEED_4_dr-overcooked6x9w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0/meta.json",
+  "3": "logs/minimax/SEED_4_dr-overcooked6x9w15_fs_IMAGE-r1s_32p_1e_400t_ae1e-05-ppo_lr0.0003g0.999cv0.5ce0.01e8mb4l0.98_pc0.2_h64cf32fc2se5ba_re_lstm_h64__SoftMoE_4E_32S___0/checkpoint.pkl"
+  
+}

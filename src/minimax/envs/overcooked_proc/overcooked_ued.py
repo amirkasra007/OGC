@@ -275,14 +275,33 @@ class UEDOvercooked(environment.Environment):
             pot_pos_1_idx = agent_pos_1_idx - 7
             bowl_pos_1_idx = agent_pos_1_idx - 9
 
-        # 🛑 Debugging: Print extracted object positions
-        # print(f"📍 Object Positions (Encoded) -> Goal: {enc[goal_pos_1_idx]}, Onion: {enc[onion_pos_1_idx]}, Pot: {enc[pot_pos_1_idx]}, Plate: {enc[bowl_pos_1_idx]}")
+        # Debugging: Print extracted object positions
+        # print(f" Object Positions (Encoded) -> Goal: {enc[goal_pos_1_idx]}, Onion: {enc[onion_pos_1_idx]}, Pot: {enc[pot_pos_1_idx]}, Plate: {enc[bowl_pos_1_idx]}")
 
-        # 🛑 Debugging: Check if indices are valid
+        ######## Debugging: Check if indices are valid #############
         max_grid_idx = h * w - 1
         if enc[goal_pos_1_idx] > max_grid_idx or enc[onion_pos_1_idx] > max_grid_idx or \
         enc[pot_pos_1_idx] > max_grid_idx or enc[bowl_pos_1_idx] > max_grid_idx:
             print("⚠ Warning: Some object indices exceed grid bounds!")
+
+        ##########PAIRED AGENT DIRECTIONS########## 
+#         # stack all four out-of-bounds checks into a boolean array
+#         checks = jnp.stack([
+#             enc[goal_pos_1_idx]  > max_grid_idx,
+#             enc[onion_pos_1_idx] > max_grid_idx,
+#             enc[pot_pos_1_idx]   > max_grid_idx,
+#             enc[bowl_pos_1_idx]  > max_grid_idx,
+#         ])
+#         # True if any of them exceeded
+#         exceeds = jnp.any(checks)
+
+#         # JAX‐friendly warning
+#         _ = jax.lax.cond(
+#             exceeds,
+#             lambda _: jax.debug.print("⚠ Warning: Some object indices exceed grid bounds!"),
+#             lambda _: None,
+#             operand=None
+# )
         # === Extract object positions from encoding ===
         if params.fixed_n_wall_steps:
             n_walls = params.n_walls  # Fixed number of walls
@@ -300,9 +319,9 @@ class UEDOvercooked(environment.Environment):
                 wall_pos_idx = jnp.flip(enc[1:params.n_walls + 1])
                 enc_len = n_walls + 11
 
-        # 🛑 Debugging: Print wall positions and number of walls
-        # print(f"🧱 Wall Positions (Encoded): {wall_pos_idx}")
-        # print(f"🏗️ Number of Walls: {n_walls}")
+        # Debugging: Print wall positions and number of walls
+        # print(f"Wall Positions (Encoded): {wall_pos_idx}")
+        # print(f"Number of Walls: {n_walls}")
 
         # Make wall map
         wall_start_time = jnp.logical_and(  # 1 if explicitly predict # blocks, else 0
@@ -323,7 +342,7 @@ class UEDOvercooked(environment.Environment):
         wall_map = wall_map.reshape(-1)
 
         occupied_mask = wall_map
-        print(f"🛑 Occupied Mask:\n{occupied_mask.reshape(self.params.height, self.params.width)}")
+        print(f"Occupied Mask:\n{occupied_mask.reshape(self.params.height, self.params.width)}")
 
         """Agents should always end up on an empty square. If they are placed on a wall pick randomly."""
         is_occupied = occupied_mask[enc[agent_pos_1_idx]] == 1
@@ -700,6 +719,29 @@ class UEDOvercooked(environment.Environment):
                 instance.agent_pos[1][1], instance.agent_pos[1][0]
             ].set(1 if agent_dir_1 == dir_idx else 0)
             dir_maps_1.append(dir_map_1)
+
+
+
+        ##########PAIRED AGENT DIRECTIONS########## 
+        # # agent_dir_0 and agent_dir_1 are scalars (possibly traced)
+        # # instance.agent_pos[i] == (x,y)
+        # x0, y0 = instance.agent_pos[0]
+        # x1, y1 = instance.agent_pos[1]
+
+        # # build one‐hot direction vectors of length 4
+        # one_hot_dir0 = jax.nn.one_hot(agent_dir_0, num_classes=4, dtype=jnp.uint8)  # shape (4,)
+        # one_hot_dir1 = jax.nn.one_hot(agent_dir_1, num_classes=4, dtype=jnp.uint8)  # shape (4,)
+
+        # # allocate a (h, w, 4) tensor and set the last‐axis slice at the agent pos
+        # dir_stack_0 = jnp.zeros((h, w, 4), dtype=jnp.uint8)
+        # dir_stack_0 = dir_stack_0.at[y0, x0, :].set(one_hot_dir0)
+
+        # dir_stack_1 = jnp.zeros((h, w, 4), dtype=jnp.uint8)
+        # dir_stack_1 = dir_stack_1.at[y1, x1, :].set(one_hot_dir1)
+
+        # # if you still need a list of 4 (h,w) maps:
+        # dir_maps_0 = [dir_stack_0[..., i] for i in range(4)]
+        # dir_maps_1 = [dir_stack_1[..., i] for i in range(4)]
 
 
         # Get Inventory Info & Agent Positions

@@ -7,7 +7,7 @@ export CUDNN_INCLUDE_DIR=$HOME/cudnn-8.9.5/include
 export CUDA_HOME=/usr/local/cuda-12.2
 export LD_PRELOAD=$HOME/cudnn-8.9.5/lib/libcudnn.so
 
-DEFAULTSEED=3
+DEFAULTSEED=4
 seed="${1:-$DEFAULTSEED}"
 
 # Debug output:
